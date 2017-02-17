@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+<head>
+  <style>
+  body {
+    min-height: 500vh;
+    margin: 0;
+    padding: 0;
+  }
+
+  canvas {
+    display: block;
+    margin: 0;
+    padding: 0;
+    height: 80vh;
+  }
+  </style>
+  <title>WebGL demo</title>
+</head>
+<body>
+  <input type="range" min="0" max="255" value="127">
+  <canvas width="1024" height="768"></canvas>
+
+  <script id="vs" type="text/plain">
+    attribute vec2 aVertexPosition;
+    attribute vec2 aTextureCoord;
+
+    varying highp vec2 vTextureCoord;
+
+    void main(void) {
+      vTextureCoord = aTextureCoord;
+      gl_Position = vec4(aVertexPosition, 0.0, 1.0);
+    }
+  </script>
+  <script id="fs" type="text/plain">
+    precision highp float;
+    varying highp vec2 vTextureCoord;
+
+    uniform sampler2D uSampler;
+    uniform float uThreshold;
+    uniform float uWidth;
+    uniform float uHeight;
+
+    void main(void) {
+      float x = 1.0 / uWidth;
+      float y = 1.0 / uHeight;
+      vec4 horizEdge = vec4( 0.0 );
+      horizEdge -= texture2D( uSampler, vec2( vTextureCoord.x - x, vTextureCoord.y - y ) ) * 1.0;
+      horizEdge -= texture2D( uSampler, vec2( vTextureCoord.x - x, vTextureCoord.y     ) ) * 2.0;
+      horizEdge -= texture2D( uSampler, vec2( vTextureCoord.x - x, vTextureCoord.y + y ) ) * 1.0;
+      horizEdge += texture2D( uSampler, vec2( vTextureCoord.x + x, vTextureCoord.y - y ) ) * 1.0;
+      horizEdge += texture2D( uSampler, vec2( vTextureCoord.x + x, vTextureCoord.y     ) ) * 2.0;
+      horizEdge += texture2D( uSampler, vec2( vTextureCoord.x + x, vTextureCoord.y + y ) ) * 1.0;
+      vec4 vertEdge = vec4( 0.0 );
+      vertEdge -= texture2D( uSampler, vec2( vTextureCoord.x - x, vTextureCoord.y - y ) ) * 1.0;
+      vertEdge -= texture2D( uSampler, vec2( vTextureCoord.x    , vTextureCoord.y - y ) ) * 2.0;
+      vertEdge -= texture2D( uSampler, vec2( vTextureCoord.x + x, vTextureCoord.y - y ) ) * 1.0;
+      vertEdge += texture2D( uSampler, vec2( vTextureCoord.x - x, vTextureCoord.y + y ) ) * 1.0;
+      vertEdge += texture2D( uSampler, vec2( vTextureCoord.x    , vTextureCoord.y + y ) ) * 2.0;
+      vertEdge += texture2D( uSampler, vec2( vTextureCoord.x + x, vTextureCoord.y + y ) ) * 1.0;
+      vec3 edge = sqrt((horizEdge.rgb * horizEdge.rgb) + (vertEdge.rgb * vertEdge.rgb));
+
+      if(((edge.r + edge.g + edge.b) / 3.0) >= uThreshold) {
+        gl_FragColor = vec4( 1.0 );
+      } else {
+        gl_FragColor = vec4( 0.0, 0.0, 0.0, 1.0 );
+      }
+    }
+   </script>
+
+  <script src="3.js"></script>
+</body>
+</html>
