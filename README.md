@@ -18,6 +18,6 @@ Edge detection can be done using the [Sobel operator](), using a relatively simp
 
 ## The demos
 
-* [Run the operations on the main thread](/1-mainthread), which blocks the UI and is janky.
-* [Run the operations in a separate worker](/2-web-workers), which does not block the UI but still takes quite long.
-* [Run the operations as a shader in WebGL](/3-webgl), which is fast but takes its toll on the GPU.
+* [Run the operations on the main thread](https://avgp.github.io/hiperf-js-demos/1-mainthread), which blocks the UI and is janky.
+* [Run the operations in a separate worker](https://avgp.github.io/hiperf-js-demos/2-web-workers), which does not block the UI but still takes quite long.
+* [Run the operations as a shader in WebGL](https://avgp.github.io/hiperf-js-demos/3-webgl), which is fast but takes its toll on the GPU.
