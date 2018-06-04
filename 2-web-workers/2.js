@@ -8,7 +8,7 @@ worker.onmessage = function(evt) {
   ctx.putImageData(imgData, 0, 0)
 }
 
-document.querySelector('input').oninput = function() {
+document.querySelector('input').onchange = function() {
   threshold = this.value
   ctx.drawImage(img, 0, 0, width, height)
   var imgData = ctx.getImageData(0, 0, width, height)
